@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,8 +28,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.annotation.IntDef;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -89,11 +93,10 @@ public class NotificationService extends Service {
                 Context.MODE_PRIVATE);
 
         // Get deviceId
-        deviceId = telephonyManager.getDeviceId();
+
+        deviceId = sharedPrefs.getString(Constants.DEVICE_ID,"");
         // Log.d(LOGTAG, "deviceId=" + deviceId);
         Editor editor = sharedPrefs.edit();
-        editor.putString(Constants.DEVICE_ID, deviceId);
-        editor.commit();
 
         // If running on an emulator
         if (deviceId == null || deviceId.trim().length() == 0
@@ -119,6 +122,8 @@ public class NotificationService extends Service {
             }
         });
     }
+
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
